@@ -61,14 +61,14 @@ public class Percolation {
     
     private void checkRange(int row,int col){
         if(row < 1 || row > _lineSize || col < 1|| col > _lineSize){
-            throw new java.lang.IllegalArgumentException("out of range");
+            throw new java.lang.IllegalArgumentException();
         }
     }
    
    public Percolation(int n)                // create n-by-n grid, with all sites blocked
    {
        if(n<=0){
-           throw new java.lang.IllegalArgumentException("n<=0");
+           throw new java.lang.IllegalArgumentException();
        }
        _lineSize = n;
        _total = n*n+2;
@@ -77,7 +77,8 @@ public class Percolation {
        for(int i = 0;i < _total;i++){
            _openSites[i] = false;
        }       
-       _openSites[_virtualTopIndex] = true;       
+       _openSites[_virtualTopIndex] = true;  
+       _openSites[_virtualBottemIndex] = true;    
       
        
    }
