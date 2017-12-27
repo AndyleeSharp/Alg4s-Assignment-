@@ -1,5 +1,5 @@
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
-public class Percolation {
+public class Percolation_backwash {
    private WeightedQuickUnionUF _uf;
    private final int _virtualTopIndex = 0;
    private final int _virtualBottemIndex = 1;
@@ -23,9 +23,9 @@ public class Percolation {
    }
    
    private int getUnderIndex(int index){
-//       if(index >= _total - _lineSize){
-//           return _virtualBottemIndex;
-//       }
+       if(index >= _total - _lineSize){
+           return _virtualBottemIndex;
+       }
        index += _lineSize;
        if(index >= _total){
            return -1;
@@ -65,7 +65,7 @@ public class Percolation {
         }
     }
    
-   public Percolation(int n)                // create n-by-n grid, with all sites blocked
+   public Percolation_backwash(int n)                // create n-by-n grid, with all sites blocked
    {
        if(n<=0){
            throw new java.lang.IllegalArgumentException();
@@ -78,7 +78,7 @@ public class Percolation {
            _openSites[i] = false;
        }       
        _openSites[_virtualTopIndex] = true;  
-       //_openSites[_virtualBottemIndex] = true;    
+       _openSites[_virtualBottemIndex] = true;    
       
        
    }
@@ -127,12 +127,7 @@ public class Percolation {
    }
    public boolean percolates()              // does the system percolate?
    {
-       for(int i = _total - _lineSize;i < _total;i++){
-           if( _uf.connected(_virtualTopIndex,i)){
-               return true;
-           }
-       }
-       return false;
+       return _uf.connected(_virtualTopIndex,_virtualBottemIndex);
    }
    public static void main(String[] args)   // test client (optional)
    {
