@@ -1,6 +1,7 @@
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
    private WeightedQuickUnionUF _uf;
+    private WeightedQuickUnionUF _uf2;
    private final int _virtualTopIndex = 0;
    private final int _virtualBottemIndex = 1;
    private int _lineSize;
@@ -23,9 +24,9 @@ public class Percolation {
    }
    
    private int getUnderIndex(int index){
-//       if(index >= _total - _lineSize){
-//           return _virtualBottemIndex;
-//       }
+       if(index >= _total - _lineSize){
+           return _virtualBottemIndex;
+       }
        index += _lineSize;
        if(index >= _total){
            return -1;
@@ -73,12 +74,13 @@ public class Percolation {
        _lineSize = n;
        _total = n*n+2;
        _uf = new WeightedQuickUnionUF(_total);
+       _uf2 = new WeightedQuickUnionUF(_total);
        _openSites = new boolean[_total];
        for(int i = 0;i < _total;i++){
            _openSites[i] = false;
        }       
        _openSites[_virtualTopIndex] = true;  
-       //_openSites[_virtualBottemIndex] = true;    
+       _openSites[_virtualBottemIndex] = true;    
       
        
    }
@@ -95,18 +97,24 @@ public class Percolation {
        int nearIndex = getUpperIndex(index);
        if(nearIndex!=-1 && _openSites[nearIndex]){           
            _uf.union(index,nearIndex);
+           _uf2.union(index,nearIndex);
        }
        nearIndex = getUnderIndex(index);
        if(nearIndex!=-1 && _openSites[nearIndex]){          
            _uf.union(index,nearIndex);
+           if(nearIndex != _virtualBottemIndex){
+               _uf2.union(index,nearIndex);
+           }
        }
        nearIndex = getLeftIndex(index);
        if(nearIndex!=-1 && _openSites[nearIndex]){          
            _uf.union(index,nearIndex);
+           _uf2.union(index,nearIndex);
        }
        nearIndex = getRightIndex(index);
        if(nearIndex!=-1 && _openSites[nearIndex]){          
            _uf.union(index,nearIndex);
+           _uf2.union(index,nearIndex);
        }
    }
    public boolean isOpen(int row, int col)  // is site (row, col) open?
@@ -119,7 +127,7 @@ public class Percolation {
    {
        checkRange(row,col);
        int index = calIndex(row,col);
-       return (_openSites[index] && _uf.connected(index,_virtualTopIndex));
+       return (_openSites[index] && _uf2.connected(index,_virtualTopIndex));
    }
    public int numberOfOpenSites()       // number of open sites
    {
@@ -127,12 +135,7 @@ public class Percolation {
    }
    public boolean percolates()              // does the system percolate?
    {
-       for(int i = _total - _lineSize;i < _total;i++){
-           if( _uf.connected(_virtualTopIndex,i)){
-               return true;
-           }
-       }
-       return false;
+       return _uf.connected(_virtualTopIndex,_virtualBottemIndex);
    }
    public static void main(String[] args)   // test client (optional)
    {
