@@ -3,7 +3,7 @@ import java.util.Comparator;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdDraw;
-public class BruteCollinearPoints {
+public class FastCollinearPoints {
     private class MyLineSegment{
         public double slope;
         public LineSegment segment;
@@ -22,7 +22,7 @@ public class BruteCollinearPoints {
        {
            MyLineSegment ls = segments[i];
            if(ls.endPt.compareTo(p2) == 0 && slope == ls.slope){
-               //StdOut.printf("return!!!=========\n");
+               
                return;
 
            }
@@ -30,7 +30,7 @@ public class BruteCollinearPoints {
        }
        segments[lineSegmentNum++] = new MyLineSegment(p1,p2,slope);
    }
-   public BruteCollinearPoints(Point[] points)    // finds all line segments containing 4 points
+   public FastCollinearPoints(Point[] points)     // finds all line segments containing 4 or more points
    {
        if(points == null)
        {
@@ -49,25 +49,27 @@ public class BruteCollinearPoints {
                }
            }
        }
-      
+       Point[] helpArray = new Point[len];
        for(int i = 0;i<len - 3;i++){
-           Arrays.sort(points,i,len);
+          
+           for(int k = i; k <len ;k++){
+               helpArray[k] = points[k];
+           }
            Point p = points[i];
            Comparator<Point> com = p.slopeOrder();
            int j = i+1;
-           Arrays.sort(points,j,len,com);
+           Arrays.sort(helpArray,j,len,com);
           
           
            int k = 0;
            
-           double preSlope =  p.slopeTo(points[j]);
+           double preSlope =  p.slopeTo(helpArray[j]);
            while(j<len){
-               double curSlope = p.slopeTo(points[j]);
-               //StdOut.printf("i:%d j:%d,preSlope:%f,curSlope:%f,k:%d pt:%s\n",i,j,preSlope,curSlope,k,points[j].toString());
+               double curSlope = p.slopeTo(helpArray[j]);
                if(preSlope != curSlope){
                    if(k >=3){
-                       //StdOut.printf("add!!\n");
-                       addSegment(p,points[j-1],preSlope);
+                       
+                       addSegment(p,helpArray[j-1],preSlope);
                          
                    }
                    k = 1;             
@@ -78,8 +80,8 @@ public class BruteCollinearPoints {
                }
                if(j == len -1){
                    if(k >= 3){
-                      // StdOut.printf("add!!\n");
-                       addSegment(p,points[j],curSlope);
+                       
+                       addSegment(p,helpArray[j],curSlope);
                    }
                    
                }
@@ -103,12 +105,13 @@ public class BruteCollinearPoints {
        }
        return ret;
    }
+   
    public static void main(String[] args) {
          int n = Integer.parseInt(StdIn.readString());
          //StdOut.printf("%d\n",n);
          Point pts[] = new Point[n];
          for(int i = 0;i<n;i++){
-             if(StdIn.isEmpty()){
+              if(StdIn.isEmpty()){
                  throw new java.lang.IllegalArgumentException();
              }
              int x = Integer.parseInt(StdIn.readString());
@@ -117,8 +120,8 @@ public class BruteCollinearPoints {
              pts[i] = new Point(x,y);
          }
          
-         BruteCollinearPoints bcp = new BruteCollinearPoints(pts);
-         //StdOut.printf("numberOfSegments：%d",bcp.numberOfSegments());
+         FastCollinearPoints bcp = new FastCollinearPoints(pts);
+         StdOut.printf("numberOfSegments：%d",bcp.numberOfSegments());
          
          // draw the points
          StdDraw.enableDoubleBuffering();
@@ -137,5 +140,4 @@ public class BruteCollinearPoints {
          }
          StdDraw.show();
      }
-       
 }

@@ -64,7 +64,7 @@ public class Point implements Comparable<Point> {
         }else if(that.x == this.x){
             return Double.POSITIVE_INFINITY;
         }else{
-            return (that.y - this.y)/(that.x - this.x);
+            return (that.y - this.y)*1.0/(that.x - this.x);
         }
         
     }
@@ -93,12 +93,12 @@ public class Point implements Comparable<Point> {
         }
     }
     
-    public class SlopeComparator implements Comparator<Point>{
+    private class SlopeComparator implements Comparator<Point>{
         @Override
         public int compare(Point p1,Point p2)
         {
-            double s1 = slopeTo(p1);
-            double s2 = slopeTo(p2);
+            double s1 = Point.this.slopeTo(p1);
+            double s2 = Point.this.slopeTo(p2);
             if(s1 == s2){
                 return 0;
             }else if(s1 < s2){
